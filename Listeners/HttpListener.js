@@ -18,6 +18,10 @@ class HttpListener {
             new InitializeFlow(request, response, this.slack);
 
         });
+
+        app.post('/test', (request, response) => {
+            console.log(request);
+        })
     }
 }
 
