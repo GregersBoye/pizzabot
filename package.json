@@ -1,0 +1,28 @@
+{
+  "name": "pizzabot",
+  "version": "1.0.0",
+  "description": "A slackbot for ordering pizza",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "nodemon": "nodemon app.js",
+    "parse": "node parse.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gregers.boye@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "node-html-parser": "^1.1.11",
+    "promisify-node": "^0.5.0",
+    "query-string": "^6.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
