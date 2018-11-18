@@ -1,4 +1,6 @@
 const InitializeFlow = require('./../Handlers/HttpHandlers/Post/InitializeFlow');
+const MenuResponse = require('./../Handlers/HttpHandlers/Post/MenuResponse');
+
 const http = require('http');
 const Slack = require('./../Wrapper/Slack');
 class HttpListener {
@@ -19,8 +21,9 @@ class HttpListener {
 
         });
 
-        app.post('/test', (request, response) => {
-            console.log(request);
+        app.post('/pizzaResponse', (request, response) => {
+            new MenuResponse(request, response, this.slack);
+
         })
     }
 }

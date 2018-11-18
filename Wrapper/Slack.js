@@ -30,12 +30,11 @@ class Slack {
     /**
      *
      * @param member_id
-     * @param menu
      * @param channel_id
-
+     * @param data
      */
     sendEphemereal(member_id, channel_id, data) {
-
+console.log(data);
         const path = 'chat.postEphemeral';
 
         if(typeof data.attachments !== "undefined" && typeof data.attachments !== "string") {

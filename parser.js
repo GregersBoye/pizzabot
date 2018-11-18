@@ -5,7 +5,7 @@ const fs = require('fs');
 
 class Parser{
     constructor(){
-        let menu = {};
+        let menu = [];
 
         this.html = fs.readFileSync('menu.html', 'utf8');
         const root = parse(this.html);
@@ -13,9 +13,9 @@ class Parser{
 
         categories.forEach((category) => {
             const currentCategory =category.attributes['data-test-id']
-            menu[currentCategory] = [];
-            const items = category.querySelectorAll('.menu-product');
 
+            const items = category.querySelectorAll('.menu-product');
+            const categoryArray = []
             items.forEach((item) => {
 
                 let dish = item.querySelector('.product-title').removeWhitespace().rawText;
@@ -30,13 +30,18 @@ class Parser{
                     dish = dish.substr(2);
                     isLunchOffer = true;
                 }
-                menu[currentCategory].push({
+                categoryArray.push({
                     dish: dish,
                     price: parseInt(price),
                     isLunchOffer: isLunchOffer
                 })
 
-            })
+            });
+
+            menu.push({
+                category: currentCategory,
+                dishes: categoryArray
+            });
         });
 
         console.log(menu);
