@@ -24,6 +24,10 @@ class HttpListener {
         app.post('/pizzaResponse', (request, response) => {
             new MenuResponse(request, response, this.slack);
 
+        });
+
+        app.get('/', (request, response) => {
+            response.send('this is the pizza-bot answering');
         })
     }
 }
