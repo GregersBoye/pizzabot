@@ -12,7 +12,7 @@ class InitializeFlow {
             result.members.forEach((member) => {
 
                 const data = {
-                    "text": "Det er pizzatid!",
+                    "text": "@here Det er pizzatid!",
                     attachments: [
                         {
 

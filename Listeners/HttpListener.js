@@ -35,8 +35,15 @@ class HttpListener {
             this.choiceList = result.list;
         });
 
-        app.post('/pizzaroll', (request, response) => {
-            const result = this.rollForOrdering.roll(request, this.choiceList);
+        app.post('/roll', (request, response) => {
+            console.log("vi er i roll")
+            this
+                .rollForOrdering
+                .roll(request, this.choiceList)
+                .then((result)=> {
+                      this.choiceList = [];
+                      response.send("Tak for denne gang");
+            });
 
         });
 

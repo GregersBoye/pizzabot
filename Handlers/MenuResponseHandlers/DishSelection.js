@@ -77,7 +77,6 @@ class DishSelection {
             attachments: [
                 {
                     fields: fields,
-                    footer: "Sendt af Pizzabotten"
                 }
             ]
         };
