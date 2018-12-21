@@ -44,7 +44,7 @@ class Parser{
             });
         });
 
-        console.log(menu);
+
         fs.writeFile('./menu.json', JSON.stringify(menu), (error) => {
             if(error){
                 console.log("An error occurred")

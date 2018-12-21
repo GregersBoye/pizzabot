@@ -6,7 +6,7 @@ class InitializeFlow {
 
         const channelId = this.request.body.channel_id;
 
-        this.slack.getChannelInfo(channelId).then((result) => {
+        return this.slack.getChannelInfo(channelId).then((result) => {
 
             //TODO: enqueue all calls with q.all()
             result.members.forEach((member) => {
@@ -36,9 +36,9 @@ class InitializeFlow {
                                     "value": "false",
                                     "confirm": {
                                         "title": "Er du sikker?",
-                                        "text": "Pizza er rigtig godt!",
-                                        "ok_text": "Ja",
-                                        "dismiss_text": "Nej"
+                                        "text": "(Pizza er rigtig godt!)",
+                                        "ok_text": "Nej! Ingen pizza til mig",
+                                        "dismiss_text": "Ok, så da"
                                     }
                                 }
                             ]
@@ -48,12 +48,14 @@ class InitializeFlow {
                 };
 
                 slack.sendEphemereal(member, channelId, data).then((result) => {
-                    console.log("we got respose");
+
                 }).catch((error) => {
 
                 });
-            });
 
+
+            });
+            return result.members.length;
 
         }).catch((error) => {
             console.log('An error occurred');

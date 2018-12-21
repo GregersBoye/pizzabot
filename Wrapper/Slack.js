@@ -23,9 +23,63 @@ class Slack {
 
         };
 
-        return this.sendGet(config);
+        return this.sendGet(config).then((result) => {
+            return result.channel;
+        });
     }
 
+    getUserList() {
+        const config = {
+            path: 'users.list',
+            params: {
+                token: this.token
+            }
+
+        };
+
+        return this
+            .sendGet(config)
+            .then((result) => {
+
+                return result
+                    .members
+                    .filter((person) => {
+                        return !person.is_bot && !person.deleted;
+                    })
+                    .map((person) => {
+
+                        let name = person.profile.display_name;
+
+                        if (name === "") {
+                            name = person.name;
+                        }
+
+                        return {
+                            id: person.id,
+                            name: name
+                        }
+                    });
+                }
+            );
+    }
+
+    sendMessage(channel_id, data, timestamp = null) {
+        let path = 'chat.postMessage';
+
+        if(timestamp !== null){
+            path = 'chat.update';
+            data.ts = timestamp;
+        }
+
+
+        if (typeof data.attachments !== "undefined" && typeof data.attachments !== "string") {
+            data.attachments = JSON.stringify(data.attachments);
+        }
+
+        data.channel = channel_id;
+
+        return this.sendPost(data, path);
+    }
 
     /**
      *
@@ -34,15 +88,15 @@ class Slack {
      * @param data
      */
     sendEphemereal(member_id, channel_id, data) {
-console.log(data);
+
         const path = 'chat.postEphemeral';
 
-        if(typeof data.attachments !== "undefined" && typeof data.attachments !== "string") {
+        if (typeof data.attachments !== "undefined" && typeof data.attachments !== "string") {
             data.attachments = JSON.stringify(data.attachments);
         }
 
         data.channel = channel_id;
-        data.user =  member_id;
+        data.user = member_id;
 
         return this.sendPost(data, path);
     }
@@ -70,19 +124,23 @@ console.log(data);
      * @param config
      */
     sendGet(config) {
-        const data = `${this.baseUrl}/${config.path}?` + qs.stringify(config.params);
+        let data = `${this.baseUrl}/${config.path}`
+
+        if (typeof config.params !== 'undefined') {
+            data = `${data}?${qs.stringify(config.params)}`;
+        }
 
         return request.get(data).then((response) => {
 
             response = JSON.parse(response);
-            console.log(response)
+
 
             if (!response.ok) {
-                console.log(response);
+
                 return Promise.reject("An error occurred");
             }
 
-            return Promise.resolve(response.channel);
+            return Promise.resolve(response);
         }).catch((error) => {
             console.log(error);
         });

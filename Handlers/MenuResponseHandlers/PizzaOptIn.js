@@ -2,26 +2,54 @@ const Menu = require('./../../Menu');
 const Slack = require('./../../Wrapper/Slack');
 
 class PizzaOptIn {
-    constructor(response) {
-        const slack = new Slack();
-        const user = response.user.name;
+    constructor(userList) {
+        this.userList = userList;
+    }
 
-        if (response.actions[0].value === "true") {
-            this.getPizzaMessage()
-                .then((messageData) => {
-                    return slack.sendEphemereal(response.user.id, response.channel.id, messageData)
-                })
-                .then((result) => {
-                    console.log("we got respose");
-                })
-                .catch((error) => {
+    handleRequest(request, choiceList) {
+        const user = this.userList.find((user) => {
+            return user.id === request.user.id
+        });
 
-                });
+        const existingChoiceIndex = choiceList.findIndex((choice) => {
+            return choice.user === user.name;
+        });
 
+        if (request.actions[0].value === 'false') {
+            console.log(`${user.name} does not want pizza`);
 
-        } else {
-            console.log(`${user} does not want pizza`);
+            if(existingChoiceIndex !== -1){
+                choiceList.splice(existingChoiceIndex, 1);
+            }
+
+            return {list: choiceList, response: "Fair nok"};
         }
+
+        const slack = new Slack();
+
+        const choice = {
+            user: user.name,
+            choice: null
+        };
+
+        if (existingChoiceIndex === -1) {
+            choiceList.push(choice);
+        } else {
+            choiceList[existingChoiceIndex] = choice;
+        }
+
+        this.getPizzaMessage()
+            .then((messageData) => {
+                return slack.sendEphemereal(request.user.id, request.channel.id, messageData)
+            })
+            .then((result) => {
+                console.log("we got response");
+            })
+            .catch((error) => {
+
+            });
+
+        return {list: choiceList, response: "Super"};
     }
 
     getPizzaMessage() {
@@ -41,7 +69,7 @@ class PizzaOptIn {
             });
 
             return {
-                "text": "Super, nu skal du vælge hvad du vil ha!",
+                "text": "Så skal du vælge hvad du vil ha! Du kan skifte din bestilling ved at vælge noget nyt",
                 "response_type": "in_channel",
                 "attachments": [
                     {

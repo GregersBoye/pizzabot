@@ -1,25 +1,35 @@
 const PizzaOptIn = require('./../../MenuResponseHandlers/PizzaOptIn');
-const CategorySelection = require('./../../MenuResponseHandlers/CategorySelection');
 const DishSelection = require('./../../MenuResponseHandlers/DishSelection');
 
 
 class MenuResponse {
-    constructor(request, response, slack) {
-        this.request = request;
-        this.response = response;
-        this.slack = slack;
+    constructor(slack, choiceList, userList) {
+        this.choiceList = choiceList;
+        this.pizzaOptin = new PizzaOptIn(userList);
+        this.dishSelection = new DishSelection(userList);
+        this.rollForOrdering = new RollForOrdering(userList);
 
-        const payload = JSON.parse(this.request.body.payload);
-console.log(payload);
-        new this.responseHandlers[payload.callback_id](payload);
+        this.userList = userList;
+
+        this.slack = slack;
+    }
+
+    handleRequest(request, response){
+        const payload = JSON.parse(request.body.payload);
+
+        response = this.responseHandlers[payload.callback_id].handleRequest(payload, this.choiceList);
+        this.choiceList = response.list;
+
+
+        return response;
 
     }
 
     get responseHandlers() {
         return {
-            pizza_opt_in: PizzaOptIn,
-            category_selected: CategorySelection,
-            dish_selected: DishSelection
+            pizza_opt_in: this.pizzaOptin,
+            dish_selected: this.dishSelection,
+            roll_for_ordering: this.rollForOrdering
         }
     }
 }
