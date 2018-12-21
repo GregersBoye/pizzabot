@@ -7,7 +7,6 @@ class MenuResponse {
         this.choiceList = choiceList;
         this.pizzaOptin = new PizzaOptIn(userList);
         this.dishSelection = new DishSelection(userList);
-        this.rollForOrdering = new RollForOrdering(userList);
 
         this.userList = userList;
 
